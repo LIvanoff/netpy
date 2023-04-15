@@ -34,3 +34,21 @@ class ELU(object):
             return x
         else:
             return self.alpha * (np.exp(x) - 1)
+
+
+class sign(object):
+    def __call__(self, x):
+        if x > 0:
+            return 1
+        elif x == 0:
+            return 0
+        else:
+            return -1
+
+
+class Heaviside(object):
+    def __call__(self, x):
+        if x > 0:
+            return 1
+        else:
+            return 0
