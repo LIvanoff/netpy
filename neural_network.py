@@ -36,6 +36,17 @@ class ELU(object):
             return self.alpha * (np.exp(x) - 1)
 
 
+class LeakyReLU(object):
+    def __init__(self, alpha: float = 0.01):
+        self.alpha = alpha
+
+    def __call__(self, x):
+        if x >= 0:
+            return x
+        else:
+            return self.alpha * x
+
+
 class sign(object):
     def __call__(self, x):
         if x > 0:
