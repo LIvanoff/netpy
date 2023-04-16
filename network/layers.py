@@ -68,8 +68,15 @@ class Hardshrink(object):
         else:
             return 0
 
+
 class Hardsigmoid(object):
     def __call__(self, x):
+        if x >= 3:
+            return 1
+        elif x <= -3:
+            return 0
+        else:
+            return x / 6. + 0.5
 
 
 class SoftPlus(object):
@@ -80,6 +87,16 @@ class SoftPlus(object):
 class Softmax(object):
     def __call__(self, x):
         return np.exp(x) / np.sum(np.exp(x))
+
+
+class LogSigmoid(object):
+    def __call__(self, x):
+        return np.log(1. / (1. + np.exp(-x)))
+
+
+class Tanh(object):
+    def __call__(self, x):
+        return np.tanh(x)
 
 
 class Threshold(object):
