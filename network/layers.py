@@ -59,6 +59,19 @@ class Heaviside(object):
             return 0
 
 
+class Hardshrink(object):
+    def __call__(self, x, lambda_: float = 0.5):
+        if x > lambda_:
+            return x
+        elif x < -lambda_:
+            return x
+        else:
+            return 0
+
+class Hardsigmoid(object):
+    def __call__(self, x):
+
+
 class SoftPlus(object):
     def __call__(self, x):
         return np.log(1 + np.exp(x))
