@@ -18,6 +18,6 @@ def BCE(y, y_hat):
     return np.mean(-(y * np.log(y_hat) + (1 - y) * np.log(1 - y_hat)))
 
 
-def cross_entropy(y, y_hat):
+def CrossEntropy(y, y_hat):
     y_hat = np.clip(y_hat, 1e-10, 1 - 1e-10)
     return -y * np.log(y_hat)
