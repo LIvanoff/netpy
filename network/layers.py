@@ -5,8 +5,8 @@ class Linear(object):
     def __init__(self, n_input: int, n_output: int):
         self.n_input = n_input
         self.n_output = n_output
-        self.weight = np.random.normal(loc=0.0, scale=0.01, size=(self.n_input, self.n_output))
-        self.bias = np.random.normal(loc=0.0, scale=0.01)
+        self.weight = np.random.normal(loc=0.0, scale=0.5, size=(self.n_input, self.n_output))
+        self.bias = np.random.normal(loc=0.0, scale=0.5)
 
     def __call__(self, x):
         return np.dot(x.T, self.weight) + self.bias
@@ -14,7 +14,7 @@ class Linear(object):
 
 class Sigmoid(object):
     def __call__(self, x):
-        return 1. / 1 + np.exp(-x)
+        return 1. / (1 + np.exp(-x))
 
 
 class ReLU(object):
@@ -63,3 +63,13 @@ class Heaviside(object):
             return 1
         else:
             return 0
+
+
+class SoftPlus(object):
+    def __call__(self, x):
+        return np.log(1 + np.exp(x))
+
+
+class Softmax(object):
+    def __call__(self, x):
+        return np.exp(x) / np.mean(np.exp(x))
