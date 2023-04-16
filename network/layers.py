@@ -26,25 +26,19 @@ class ReLU(object):
 
 
 class ELU(object):
-    def __init__(self, alpha: float = 1.0):
-        self.alpha = alpha
-
-    def __call__(self, x):
+    def __call__(self, x, alpha: float = 1.0):
         if x >= 1:
             return x
         else:
-            return self.alpha * (np.exp(x) - 1)
+            return alpha * (np.exp(x) - 1)
 
 
 class LeakyReLU(object):
-    def __init__(self, alpha: float = 0.01):
-        self.alpha = alpha
-
-    def __call__(self, x):
+    def __call__(self, x, alpha: float = 0.01):
         if x >= 0:
             return x
         else:
-            return self.alpha * x
+            return alpha * x
 
 
 class sign(object):
@@ -72,4 +66,12 @@ class SoftPlus(object):
 
 class Softmax(object):
     def __call__(self, x):
-        return np.exp(x) / np.mean(np.exp(x))
+        return np.exp(x) / np.sum(np.exp(x))
+
+
+class Threshold(object):
+    def __call__(self, x, threshold):
+        if x > threshold:
+            return x
+        else:
+            return 0
