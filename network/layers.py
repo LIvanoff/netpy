@@ -1,20 +1,25 @@
-import numpy as np
+import torch
 
 
 class Linear(object):
     def __init__(self, n_input: int, n_output: int):
         self.n_input = n_input
         self.n_output = n_output
-        self.weight = np.random.normal(loc=0.0, scale=0.5, size=(self.n_input, self.n_output))
-        self.bias = np.random.normal(loc=0.0, scale=0.5)
+
+        with torch.no_grad():
+            self.weight = torch.empty((self.n_output, self.n_input), requires_grad=True).normal_(mean=0, std=0.5)
+            self.bias = torch.empty(self.n_output, requires_grad=True).normal_(mean=0, std=0.5)
+
+        # self.weight = np.random.normal(loc=0.0, scale=0.5, size=(self.n_input, self.n_output))
+        # self.bias = np.random.normal(loc=0.0, scale=0.5, size=self.n_output)
 
     def __call__(self, x):
-        return np.dot(x.T, self.weight) + self.bias
+        return x @ self.weight.T + self.bias  # np.dot(x.T, self.weight) + self.bias
 
 
 class Sigmoid(object):
     def __call__(self, x):
-        return 1. / (1 + np.exp(-x))
+        return 1. / (1. + torch.exp(-x))
 
 
 class ReLU(object):
@@ -30,7 +35,7 @@ class ELU(object):
         if x >= 1:
             return x
         else:
-            return alpha * (np.exp(x) - 1)
+            return alpha * (torch.exp(x) - 1)
 
 
 class LeakyReLU(object):
@@ -81,22 +86,22 @@ class Hardsigmoid(object):
 
 class SoftPlus(object):
     def __call__(self, x):
-        return np.log(1 + np.exp(x))
+        return torch.log(1 + torch.exp(x))
 
 
 class Softmax(object):
     def __call__(self, x):
-        return np.exp(x) / np.sum(np.exp(x))
+        return torch.exp(x) / torch.sum(torch.exp(x))
 
 
 class LogSigmoid(object):
     def __call__(self, x):
-        return np.log(1. / (1. + np.exp(-x)))
+        return torch.log(1. / (1. + torch.exp(-x)))
 
 
 class Tanh(object):
     def __call__(self, x):
-        return np.tanh(x)
+        return torch.tanh(x)
 
 
 class Threshold(object):
