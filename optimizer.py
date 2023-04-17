@@ -1,5 +1,5 @@
-import autograd as ad
-import autograd.variable as av
+from torch.autograd import grad
+import torch
 
 
 class Optimizer(object):
@@ -8,5 +8,15 @@ class Optimizer(object):
 
 
 class SGD(Optimizer):
-    def __init__(self, lr):
+    def __init__(self, lr, parameters: object):
         super().__init__(lr)
+
+    def step(self):
+        with torch.no_grad():
+            # weight -= torch.mul(d_loss_dx_w, 0.01)
+            # bias -= torch.mul(d_loss_dx_b, 0.01)
+            pass
+
+    def zero_grad(self):
+        # .zero_()
+        pass
