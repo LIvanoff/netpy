@@ -1,4 +1,3 @@
-from torch.autograd import grad
 from network.layers import Linear
 import torch
 
@@ -12,7 +11,6 @@ class Optimizer(object):
         """
         function performs a single optimization step (parameter update)
         """
-        pass
 
     def zero_grad(self):
         with torch.no_grad():
