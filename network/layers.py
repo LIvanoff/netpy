@@ -21,7 +21,7 @@ class Sigmoid(object):
 
 class ReLU(object):
     def __call__(self, x):
-        return x * (x > 0.0)
+        return x * (x > 0.)
 
 
 class ELU(object):
@@ -42,6 +42,14 @@ class sign(object):
 class Heaviside(object):
     def __call__(self, x):
         pass
+
+
+class BatchNormilize(object):
+    """
+    layer for normalizing the input of a neural network
+    """
+    def __call__(self, x):
+        return x
 
 
 class Hardshrink(object):
