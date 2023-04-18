@@ -14,6 +14,14 @@ class Linear(object):
         return x @ self.weight.T + self.bias
 
 
+class BatchNormilize(object):
+    """
+    layer for normalizing the input of a neural network
+    """
+    def __call__(self, x):
+        return x
+
+
 class Sigmoid(object):
     def __call__(self, x: torch.Tensor):
         return 1. / (1. + torch.exp(-x))
@@ -56,12 +64,12 @@ class sign(object):
 
 
 class Heaviside(object):
-    def __call__(self, x: torch.Tensor, values: float):
+    def __call__(self, x: torch.Tensor, value: float):
         for i in range(len(x)):
             if x[i] > 0:
                 x[i] = 1
             elif x[i] == 0:
-                x[i] = 0
+                x[i] = value
             else:
                 x[i] = -1
         return x
