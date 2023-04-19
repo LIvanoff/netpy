@@ -18,6 +18,7 @@ class BatchNormilize(object):
     """
     layer for normalizing the input of a neural network
     """
+
     def __call__(self, x):
         return x
 
@@ -29,69 +30,76 @@ class Sigmoid(object):
 
 class ReLU(object):
     def __call__(self, x: torch.Tensor):
-        for i in range(len(x)):
-            if x[i] < 0:
-                x[i] = 0
+        for i in range(x.size(dim=0)):
+            for j in range(x.size(dim=1)):
+                if x[i][j] < 0:
+                    x[i][j] = 0
         return x
 
 
 class ELU(object):
     def __call__(self, x: torch.Tensor, alpha: float = 1.):
-        for i in range(len(x)):
-            if x[i] < 0:
-                x[i] = alpha * (torch.exp(x[i]) - 1)
+        for i in range(x.size(dim=0)):
+            for j in range(x.size(dim=1)):
+                if x[i][j] < 0:
+                    x[i][j] = alpha * (torch.exp(x[i][j]) - 1)
         return x
 
 
 class LeakyReLU(object):
     def __call__(self, x: torch.Tensor, alpha: float = 0.01):
-        for i in range(len(x)):
-            if x[i] < 0:
-                x[i] = alpha * x[i]
+        for i in range(x.size(dim=0)):
+            for j in range(x.size(dim=1)):
+                if x[i][j] < 0:
+                    x[i][j] = alpha * x[i][j]
         return x
 
 
 class sign(object):
     def __call__(self, x: torch.Tensor):
-        for i in range(len(x)):
-            if x[i] > 0:
-                x[i] = 1
-            elif x[i] == 0:
-                x[i] = 0
-            else:
-                x[i] = -1
+        for i in range(x.size(dim=0)):
+            for j in range(x.size(dim=1)):
+                if x[i][j] > 0:
+                    x[i][j] = 1
+                elif x[i][j] == 0:
+                    x[i][j] = 0
+                else:
+                    x[i][j] = -1
         return x
 
 
 class Heaviside(object):
     def __call__(self, x: torch.Tensor, value: float):
-        for i in range(len(x)):
-            if x[i] > 0:
-                x[i] = 1
-            elif x[i] == 0:
-                x[i] = value
-            else:
-                x[i] = -1
+        for i in range(x.size(dim=0)):
+            for j in range(x.size(dim=1)):
+                if x[i][j] > 0:
+                    x[i][j] = 1
+                elif x[i][j] == 0:
+                    x[i][j] = value
+                else:
+                    x[i][j] = -1
         return x
 
 
 class Hardshrink(object):
     def __call__(self, x: torch.Tensor, lambda_: float = 0.5):
-        for i in range(len(x)):
-            if x[i] <= lambda_ or x[i] >= -lambda_:
-                x[i] = 0
+        for i in range(x.size(dim=0)):
+            for j in range(x.size(dim=1)):
+                if x[i][j] <= lambda_ or x[i][j] >= -lambda_:
+                    x[i][j] = 0
         return x
 
 
 class Hardsigmoid(object):
     def __call__(self, x: torch.Tensor):
-        for i in range(len(x)):
-            if x[i] >= 3:
-                x[i] = 1
-            elif x[i] <= -3:
-                x[i] = 0
-            else:
-                x[i] = x[i] / 6. + 0.5
+        for i in range(x.size(dim=0)):
+            for j in range(x.size(dim=1)):
+                if x[i][j] >= 3:
+                    x[i][j] = 1
+                elif x[i][j] <= -3:
+                    x[i][j] = 0
+                else:
+                    x[i][j] = x[i][j] / 6. + 0.5
         return x
 
 
@@ -117,6 +125,7 @@ class Tanh(object):
 
 class Threshold(object):
     def __call__(self, x: torch.Tensor, threshold: float, value: float = 0.):
-        for i in range(len(x)):
-            x[i] = 1. if x[i] > threshold else value
+        for i in range(x.size(dim=0)):
+            for j in range(x.size(dim=1)):
+                x[i][j] = 1. if x[i][j] > threshold else value
         return x
