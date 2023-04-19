@@ -29,6 +29,7 @@ class Sigmoid(object):
 
 
 class ReLU(object):
+    ''' Нужно отрефакторить '''
     def __call__(self, x: torch.Tensor):
         for i in range(x.size(dim=0)):
             for j in range(x.size(dim=1)):
@@ -38,6 +39,7 @@ class ReLU(object):
 
 
 class ELU(object):
+    ''' Нужно отрефакторить '''
     def __call__(self, x: torch.Tensor, alpha: float = 1.):
         for i in range(x.size(dim=0)):
             for j in range(x.size(dim=1)):
@@ -47,6 +49,7 @@ class ELU(object):
 
 
 class LeakyReLU(object):
+    ''' Нужно отрефакторить '''
     def __call__(self, x: torch.Tensor, alpha: float = 0.01):
         for i in range(x.size(dim=0)):
             for j in range(x.size(dim=1)):
@@ -56,6 +59,7 @@ class LeakyReLU(object):
 
 
 class sign(object):
+    ''' Нужно отрефакторить '''
     def __call__(self, x: torch.Tensor):
         for i in range(x.size(dim=0)):
             for j in range(x.size(dim=1)):
@@ -69,6 +73,7 @@ class sign(object):
 
 
 class Heaviside(object):
+    ''' Нужно отрефакторить '''
     def __call__(self, x: torch.Tensor, value: float):
         for i in range(x.size(dim=0)):
             for j in range(x.size(dim=1)):
@@ -82,6 +87,7 @@ class Heaviside(object):
 
 
 class Hardshrink(object):
+    ''' Нужно отрефакторить '''
     def __call__(self, x: torch.Tensor, lambda_: float = 0.5):
         for i in range(x.size(dim=0)):
             for j in range(x.size(dim=1)):
@@ -91,6 +97,7 @@ class Hardshrink(object):
 
 
 class Hardsigmoid(object):
+    ''' Нужно отрефакторить '''
     def __call__(self, x: torch.Tensor):
         for i in range(x.size(dim=0)):
             for j in range(x.size(dim=1)):
@@ -124,6 +131,7 @@ class Tanh(object):
 
 
 class Threshold(object):
+    ''' Нужно отрефакторить '''
     def __call__(self, x: torch.Tensor, threshold: float, value: float = 0.):
         for i in range(x.size(dim=0)):
             for j in range(x.size(dim=1)):
