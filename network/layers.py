@@ -118,5 +118,5 @@ class Tanh(object):
 class Threshold(object):
     def __call__(self, x: torch.Tensor, threshold: float, value: float = 0.):
         for i in range(len(x)):
-            x[i] = x[i] if x[i] > threshold else value
+            x[i] = 1. if x[i] > threshold else value
         return x
