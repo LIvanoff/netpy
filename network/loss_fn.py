@@ -20,4 +20,4 @@ def BCE(y, y_hat):
 
 def CrossEntropy(y, y_hat):
     y_hat = torch.clip(y_hat, 1e-10, 1 - 1e-10)
-    return -y * torch.log(y_hat)
+    return -torch.mean(y * torch.log(y_hat))
