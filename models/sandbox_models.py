@@ -81,17 +81,20 @@ class LogisticRegression(object):
     def plot_figure(pred, pcolor):
         plt.clf()
         plt.tricontourf(xx.ravel(), yy.ravel(), pcolor, cmap=plt.get_cmap('coolwarm'), alpha=1)
-        plt.scatter(x[:, 0], x[:, 1], alpha=0.8, c=pred.detach().numpy())
-        plt.grid(alpha=0.2)
+        plt.scatter(x_train[:, 0], x_train[:, 1], alpha=0.8, c=pred.detach().numpy())
+        plt.grid(alpha=0.4)
         plt.draw()
         plt.gcf().canvas.flush_events()
 
     @staticmethod
-    def plot_loss(x_loss, loss_history):
+    def plot_loss(x_loss, loss_history, val_loss_history, val_x_loss, epoch, loss, val_loss):
         plt.clf()
-        plt.plot(x_loss, loss_history)
+        plt.plot(x_loss, loss_history, label=f'train: {loss} ')
+        plt.plot(val_x_loss, val_loss_history, label=f'val: {val_loss}')
+        # plt.title(f'epoch: {epoch} loss: {loss} val loss: {val_loss}')
+        plt.legend()
+        plt.grid(alpha=0.4)
         plt.show()
-        plt.grid(alpha=0.2)
         plt.draw()
         plt.gcf().canvas.flush_events()
 
@@ -152,18 +155,28 @@ class LogisticRegression(object):
 #      [1],
 #      [1]])
 
-x = torch.Tensor(
+x_train = torch.Tensor(
     [[4.5, 5.], [4.3, 5.1], [4.5, 4.4], [5., 5.], [4.9, 4.8], [5.1, 5.], [5.3, 4.1], [5.2, 4.8], [5.1, 5.2], [4.9, 4.6],
      [4.3, 5.1], [4.2, 5.], [4.4, 4.2], [5.1, 5.3], [4.7, 4.8], [5., 5.], [5.2, 4.2], [5.1, 4.4], [5., 5.3], [4.7, 4.3],
-     [6., 2.], [3., 4.5], [4., 3.], [5., 2.8], [5.5, 2.9], [6.8, 3.5], [7.1, 4.5], [6.5, 5.9], [6.3, 6.3], [4.5, 7.],
-     [2.5, 6.],
-     [6.1, 2.1], [6.1, 4.4], [3.5, 4.], [2.8, 3.], [2.9, 5.9], [3.5, 6.8], [4.5, 7.1], [5.9, 6.5], [6.2, 6.3],
-     [4.6, 7.1], [2.3, 6.1]])
+     [6., 2.], [3., 4.5], [4., 3.], [5., 2.8], [5.5, 2.9], [6.8, 3.5], [7.1, 4.5], [6.5, 5.9], [6.3, 6.3], [4.5, 7.], [2.5, 6.],
+     [6.1, 2.1], [6.1, 4.4], [3.5, 4.], [2.8, 3.], [2.9, 5.9], [3.5, 6.8], [4.5, 7.1], [5.9, 6.5], [6.2, 6.3], [4.6, 7.1], [2.3, 6.1]])
 
-y = torch.Tensor([[1.], [1.], [1.], [1.], [1.],[1.], [1.], [1.], [1.], [1.],
-                  [1.], [1.], [1.], [1.], [1.],[1.], [1.], [1.], [1.], [1.],
-                  [0.], [0.], [0.],[0.], [0.], [0.], [0.], [0.],[0.], [0.], [0.],
-                  [0.], [0.], [0.],[0.], [0.], [0.], [0.], [0.],[0.], [0.], [0.]])
+x_val = torch.Tensor(
+    [[4.4, 5.1], [4.2, 5.2], [4.4, 4.3], [5.1, 5.], [4.8, 4.7], [5.2, 5.], [5.2, 4.3], [5.1, 4.9], [5.2, 5.], [4.8, 4.5],
+     [4.4, 5.2], [4.6, 5.], [4.3, 4.7], [4.8, 5.2], [4.4, 4.6], [4.7, 5.], [5., 4.4], [5.1, 4.3], [4.8, 5.], [5.2, 4.3],
+     [6., 2.1], [6.1, 4.5], [3.6, 4.], [2.7, 3.], [2.8, 5.7], [3.4, 6.7], [4.4, 7.], [5.8, 6.4], [6.1, 6.3], [4.5, 7.1], [2.3, 6.2],
+     [5.9, 2.2], [6., 4.4], [3.4, 4.1], [2.8, 3.1], [2.7, 5.5], [3.3, 6.5], [4.1, 6.8], [5.3, 6.6], [6., 6.], [4.1, 6.7], [2., 6.3]])
+
+y_train = torch.Tensor([[1.], [1.], [1.], [1.], [1.], [1.], [1.], [1.], [1.], [1.],
+                        [1.], [1.], [1.], [1.], [1.], [1.], [1.], [1.], [1.], [1.],
+                        [0.], [0.], [0.], [0.], [0.], [0.], [0.], [0.], [0.], [0.], [0.],
+                        [0.], [0.], [0.], [0.], [0.], [0.], [0.], [0.], [0.], [0.], [0.]])
+
+y_val = torch.Tensor([[1.], [1.], [1.], [1.], [1.], [1.], [1.], [1.], [1.], [1.],
+                      [1.], [1.], [1.], [1.], [1.], [1.], [1.], [1.], [1.], [1.],
+                      [0.], [0.], [0.], [0.], [0.], [0.], [0.], [0.], [0.], [0.], [0.],
+                      [0.], [0.], [0.], [0.], [0.], [0.], [0.], [0.], [0.], [0.], [0.]])
+
 eps = 0.1
 xx, yy = np.meshgrid(np.linspace(1.5 - eps, 7.5 + eps, 80),
                      np.linspace(1.5 - eps, 8. + eps, 80))
@@ -172,19 +185,21 @@ z = z.T
 
 classificator = LogisticRegression(2, 15)
 
-optim = optimizer.SGD(lr=0.4, model=classificator)
+optim = optimizer.SGD(lr=0.3, model=classificator)
 
 loss_history = np.array([])
 x_loss = np.array([])
+val_loss_history = np.array([])
+val_x_loss = np.array([])
 
 plt.ion()
-for epoch in range(7000):
+for epoch in range(50000):
     optim.zero_grad()
-    pred = classificator.forward(x)
-    loss = F.BCE(y, pred)
+    pred = classificator.forward(x_train)
+    loss = F.BCE(y_train, pred)
     loss.backward()
     optim.step()
-    if epoch % 100 == 0:
+    if epoch % 1000 == 0:
         print(f'epoch: {epoch} loss: {loss}')
         loss_history = np.append(loss_history, loss.detach().numpy())
         x_loss = np.append(x_loss, epoch)
@@ -192,8 +207,14 @@ for epoch in range(7000):
         #     pcolor = classificator.forward(z)
         #     pcolor = torch.reshape(pcolor, (-1,))
         #
-        # classificator.plot(pred, pcolor)
-        classificator.plot_loss(x_loss, loss_history)
+        # classificator.plot_figure(pred, pcolor)
+        with torch.no_grad():
+            val_pred = classificator.forward(x_val)
+            val_loss = F.BCE(y_val, val_pred)
+            val_loss_history = np.append(val_loss_history, val_loss.detach().numpy())
+            val_x_loss = np.append(val_x_loss, epoch)
+
+            classificator.plot_loss(x_loss, loss_history, val_loss_history, val_x_loss, epoch, loss, val_loss)
 
 plt.ioff()
 plt.show()
@@ -204,14 +225,15 @@ with torch.no_grad():
     pcolor_threshold = threshold(pcolor.clone().detach(), threshold=0.5)
     pcolor = torch.reshape(pcolor, (-1,))
     pcolor_threshold = torch.reshape(pcolor_threshold, (-1,))
-    pred = classificator.forward(x)
+    pred = classificator.forward(x_train)
 
-fig, axs = plt.subplots(1, 4, figsize=(12, 3))
+fig, axs = plt.subplots(1, 4, figsize=(14, 3))
+axs[0].tricontourf(xx.ravel(), yy.ravel(), pcolor, cmap=plt.get_cmap('coolwarm'), alpha=1)
 axs[1].tricontourf(xx.ravel(), yy.ravel(), pcolor, cmap=plt.get_cmap('coolwarm'), alpha=1)
 axs[2].tricontourf(xx.ravel(), yy.ravel(), pcolor_threshold, cmap=plt.get_cmap('coolwarm'), alpha=1)
-axs[0].scatter(x[:, 0], x[:, 1], alpha=0.8, c=y)
-axs[1].scatter(x[:, 0], x[:, 1], alpha=0.8, c=pred)
-axs[2].scatter(x[:, 0], x[:, 1], alpha=0.8, c=pred)
+axs[0].scatter(x_val[:, 0], x_val[:, 1], alpha=0.8, c=val_pred)
+axs[1].scatter(x_train[:, 0], x_train[:, 1], alpha=0.8, c=pred)
+axs[2].scatter(x_train[:, 0], x_train[:, 1], alpha=0.8, c=pred)
 axs[3].plot(x_loss, loss_history)
 axs[0].grid(alpha=0.2)
 axs[1].grid(alpha=0.2)
