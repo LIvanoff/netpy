@@ -25,7 +25,7 @@ class BatchNormalize(object):
 
 class Sigmoid(object):
     def __call__(self, x: torch.Tensor):
-        return 1. / (1. + torch.exp(-x))
+        return 1. / (1 + torch.exp(-x))
 
 
 class ReLU(object):
@@ -38,83 +38,137 @@ class ReLU(object):
             if x[i] < 0:
                 x[i] = 0
         x = x.view(x_dim0, x_dim1)
+        return x
         # for i in range(x.size(dim=0)):
         #     for j in range(x.size(dim=1)):
         #         if x[i][j] < 0:
         #             x[i][j] = 0
-        return x
 
 
 class ELU(object):
     ''' Нужно отрефакторить '''
     def __call__(self, x: torch.Tensor, alpha: float = 1.):
-        for i in range(x.size(dim=0)):
-            for j in range(x.size(dim=1)):
-                if x[i][j] < 0:
-                    x[i][j] = alpha * (torch.exp(x[i][j]) - 1)
+        x_dim0 = x.size(dim=0)
+        x_dim1 = x.size(dim=1)
+        x = x.view(-1, )
+        for i in range(len(x)):
+            if x[i] < 0:
+                x[i] = alpha * (torch.exp(x[i]) - 1)
+        x = x.view(x_dim0, x_dim1)
         return x
+        # for i in range(x.size(dim=0)):
+        #     for j in range(x.size(dim=1)):
+        #         if x[i][j] < 0:
+        #             x[i][j] = alpha * (torch.exp(x[i][j]) - 1)
 
 
 class LeakyReLU(object):
     ''' Нужно отрефакторить '''
     def __call__(self, x: torch.Tensor, alpha: float = 0.01):
-        for i in range(x.size(dim=0)):
-            for j in range(x.size(dim=1)):
-                if x[i][j] < 0:
-                    x[i][j] = alpha * x[i][j]
+        x_dim0 = x.size(dim=0)
+        x_dim1 = x.size(dim=1)
+        x = x.view(-1, )
+        for i in range(len(x)):
+            if x[i] < 0:
+                x[i] = alpha * x[i]
+        x = x.view(x_dim0, x_dim1)
         return x
+        # for i in range(x.size(dim=0)):
+        #     for j in range(x.size(dim=1)):
+        #         if x[i][j] < 0:
+        #             x[i][j] = alpha * x[i][j]
 
 
 class sign(object):
     ''' Нужно отрефакторить '''
     def __call__(self, x: torch.Tensor):
-        for i in range(x.size(dim=0)):
-            for j in range(x.size(dim=1)):
-                if x[i][j] > 0:
-                    x[i][j] = 1
-                elif x[i][j] == 0:
-                    x[i][j] = 0
-                else:
-                    x[i][j] = -1
+        x_dim0 = x.size(dim=0)
+        x_dim1 = x.size(dim=1)
+        x = x.view(-1, )
+        for i in range(len(x)):
+            if x[i] > 0:
+                x[i] = 1
+            elif x[i] == 0:
+                x[i] = 0
+            else:
+                x[i] = -1
+        x = x.view(x_dim0, x_dim1)
         return x
+        # for i in range(x.size(dim=0)):
+        #     for j in range(x.size(dim=1)):
+        #         if x[i][j] > 0:
+        #             x[i][j] = 1
+        #         elif x[i][j] == 0:
+        #             x[i][j] = 0
+        #         else:
+        #             x[i][j] = -1
 
 
 class Heaviside(object):
     ''' Нужно отрефакторить '''
     def __call__(self, x: torch.Tensor, value: float):
-        for i in range(x.size(dim=0)):
-            for j in range(x.size(dim=1)):
-                if x[i][j] > 0:
-                    x[i][j] = 1
-                elif x[i][j] == 0:
-                    x[i][j] = value
-                else:
-                    x[i][j] = -1
+        x_dim0 = x.size(dim=0)
+        x_dim1 = x.size(dim=1)
+        x = x.view(-1, )
+        for i in range(len(x)):
+            if x[i] > 0:
+                x[i] = 1
+            elif x[i] == 0:
+                x[i] = 0
+            else:
+                x[i] = -1
+        x = x.view(x_dim0, x_dim1)
         return x
+        # for i in range(x.size(dim=0)):
+        #     for j in range(x.size(dim=1)):
+        #         if x[i][j] > 0:
+        #             x[i][j] = 1
+        #         elif x[i][j] == 0:
+        #             x[i][j] = value
+        #         else:
+        #             x[i][j] = -1
 
 
 class Hardshrink(object):
     ''' Нужно отрефакторить '''
     def __call__(self, x: torch.Tensor, lambda_: float = 0.5):
-        for i in range(x.size(dim=0)):
-            for j in range(x.size(dim=1)):
-                if x[i][j] <= lambda_ or x[i][j] >= -lambda_:
-                    x[i][j] = 0
+        x_dim0 = x.size(dim=0)
+        x_dim1 = x.size(dim=1)
+        x = x.view(-1, )
+        for i in range(len(x)):
+            if x[i] <= lambda_ or x[i] >= -lambda_:
+                x[i] = 0
+        x = x.view(x_dim0, x_dim1)
         return x
+        # for i in range(x.size(dim=0)):
+        #     for j in range(x.size(dim=1)):
+        #         if x[i][j] <= lambda_ or x[i][j] >= -lambda_:
+        #             x[i][j] = 0
 
 
 class Hardsigmoid(object):
     ''' Нужно отрефакторить '''
     def __call__(self, x: torch.Tensor):
-        for i in range(x.size(dim=0)):
-            for j in range(x.size(dim=1)):
-                if x[i][j] >= 3:
-                    x[i][j] = 1
-                elif x[i][j] <= -3:
-                    x[i][j] = 0
-                else:
-                    x[i][j] = x[i][j] / 6. + 0.5
+        x_dim0 = x.size(dim=0)
+        x_dim1 = x.size(dim=1)
+        x = x.view(-1, )
+        for i in range(len(x)):
+            if x[i] >= 3:
+                x[i] = 1
+            elif x[i] <= -3:
+                x[i] = 0
+            else:
+                x[i] = x[i] / 6. + 0.5
+        x = x.view(x_dim0, x_dim1)
         return x
+        # for i in range(x.size(dim=0)):
+        #     for j in range(x.size(dim=1)):
+        #         if x[i][j] >= 3:
+        #             x[i][j] = 1
+        #         elif x[i][j] <= -3:
+        #             x[i][j] = 0
+        #         else:
+        #             x[i][j] = x[i][j] / 6. + 0.5
 
 
 class SoftPlus(object):
@@ -140,7 +194,14 @@ class Tanh(object):
 class Threshold(object):
     ''' Нужно отрефакторить '''
     def __call__(self, x: torch.Tensor, threshold: float, value: float = 0.):
-        for i in range(x.size(dim=0)):
-            for j in range(x.size(dim=1)):
-                x[i][j] = 1. if x[i][j] > threshold else value
+        x_dim0 = x.size(dim=0)
+        x_dim1 = x.size(dim=1)
+        x = x.view(-1, )
+        for i in range(len(x)):
+            x[i] = 1. if x[i] > threshold else value
+        x = x.view(x_dim0, x_dim1)
         return x
+        # for i in range(x.size(dim=0)):
+        #     for j in range(x.size(dim=1)):
+        #         x[i][j] = 1. if x[i][j] > threshold else value
+        # return x
