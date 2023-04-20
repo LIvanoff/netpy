@@ -10,6 +10,7 @@ import time
 class CSNet(object):
     def __init__(self, n_input, n_hidden):
         self.fc1 = nn.Linear(n_input, n_hidden)
+
         self.activ1 = nn.ReLU()
         self.fc2 = nn.Linear(n_input, 9)
         self.activ2 = nn.ReLU()
@@ -25,6 +26,7 @@ class CSNet(object):
         self.activ7 = nn.ReLU()
         self.fc8 = nn.Linear(10, 2)
 
+        # self.activ1 = nn.Sigmoid()
         # self.fc2 = nn.Linear(n_input, 9)
         # self.activ2 = nn.Sigmoid()
         # self.fc3 = nn.Linear(9, 8)
@@ -61,8 +63,8 @@ class CSNet(object):
         return out
 
 
-x = torch.empty(size=(20000, 10)).normal_()
-y = torch.eye(20000, 2)
+x = torch.empty(size=(10, 10)).normal_()
+y = torch.eye(100000, 2)
 
 csnet = CSNet(10, 10)
 # optim = optimizer.SGD(lr=0.4, model=csnet)
@@ -71,7 +73,7 @@ loss_history = np.array([])
 x_loss = np.array([])
 
 start_time = time.time()
-for epoch in range(100):
+for epoch in range(10):
     # optim.zero_grad()
     pred = csnet.forward(x)
     loss = F.CrossEntropy(y, pred)
