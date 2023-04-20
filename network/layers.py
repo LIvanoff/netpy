@@ -33,12 +33,18 @@ class ReLU(object):
     def __call__(self, x: torch.Tensor):
         x_dim0 = x.size(dim=0)
         x_dim1 = x.size(dim=1)
-        x = x.view(-1,)
-        for i in range(len(x)):
-            if x[i] < 0:
-                x[i] = 0
+        x = x.view(-1, )
+        x = x * (x > 0)
         x = x.view(x_dim0, x_dim1)
         return x
+        # x_dim0 = x.size(dim=0)
+        # x_dim1 = x.size(dim=1)
+        # x = x.view(-1,)
+        # for i in range(len(x)):
+        #     if x[i] < 0:
+        #         x[i] = 0
+        # x = x.view(x_dim0, x_dim1)
+        # return x
         # for i in range(x.size(dim=0)):
         #     for j in range(x.size(dim=1)):
         #         if x[i][j] < 0:
@@ -77,6 +83,7 @@ class LeakyReLU(object):
         #     for j in range(x.size(dim=1)):
         #         if x[i][j] < 0:
         #             x[i][j] = alpha * x[i][j]
+        # return x
 
 
 class sign(object):
@@ -102,6 +109,7 @@ class sign(object):
         #             x[i][j] = 0
         #         else:
         #             x[i][j] = -1
+        # return x
 
 
 class Heaviside(object):
@@ -127,6 +135,7 @@ class Heaviside(object):
         #             x[i][j] = value
         #         else:
         #             x[i][j] = -1
+        # return x
 
 
 class Hardshrink(object):
@@ -144,6 +153,7 @@ class Hardshrink(object):
         #     for j in range(x.size(dim=1)):
         #         if x[i][j] <= lambda_ or x[i][j] >= -lambda_:
         #             x[i][j] = 0
+        # return x
 
 
 class Hardsigmoid(object):
@@ -169,6 +179,7 @@ class Hardsigmoid(object):
         #             x[i][j] = 0
         #         else:
         #             x[i][j] = x[i][j] / 6. + 0.5
+        # return x
 
 
 class SoftPlus(object):
