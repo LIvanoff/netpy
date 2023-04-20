@@ -33,7 +33,7 @@ class SGD(Optimizer):
                     var[1].bias -= torch.mul(var[1].bias.grad, self.lr)
 
 
-class StepScheduler(object):
+class LRScheduler(object):
     lr: float
 
     def __init__(self, optimizer: object):
@@ -43,7 +43,7 @@ class StepScheduler(object):
                 self.lr = var[1].lr
 
 
-class StepLR(StepScheduler):
+class StepLR(LRScheduler):
     step_size: int
     gamma: float
 
