@@ -14,7 +14,7 @@ class Linear(object):
         return x @ self.weight.T + self.bias
 
 
-class BatchNormilize(object):
+class BatchNormalize(object):
     """
     layer for normalizing the input of a neural network
     """
@@ -31,10 +31,17 @@ class Sigmoid(object):
 class ReLU(object):
     ''' Нужно отрефакторить '''
     def __call__(self, x: torch.Tensor):
-        for i in range(x.size(dim=0)):
-            for j in range(x.size(dim=1)):
-                if x[i][j] < 0:
-                    x[i][j] = 0
+        x_dim0 = x.size(dim=0)
+        x_dim1 = x.size(dim=1)
+        x = x.view(-1,)
+        for i in range(len(x)):
+            if x[i] < 0:
+                x[i] = 0
+        x = x.view(x_dim0, x_dim1)
+        # for i in range(x.size(dim=0)):
+        #     for j in range(x.size(dim=1)):
+        #         if x[i][j] < 0:
+        #             x[i][j] = 0
         return x
 
 
@@ -117,7 +124,7 @@ class SoftPlus(object):
 
 class Softmax(object):
     def __call__(self, x: torch.Tensor):
-        return torch.exp(x) / torch.sum(torch.exp(x))
+        return torch.exp(x) / torch.sum(torch.exp(x), axis=1, keepdims=True)
 
 
 class LogSigmoid(object):
