@@ -157,9 +157,11 @@ class LogisticRegression(object):
 
 x_train = torch.Tensor(
     [[4.5, 5.], [4.3, 5.1], [4.5, 4.4], [5., 5.], [4.9, 4.8], [5.1, 5.], [5.3, 4.1], [5.2, 4.8], [5.1, 5.2], [4.9, 4.6],
-     [4.3, 5.1], [4.2, 5.], [4.4, 4.2], [5.1, 5.3], [4.7, 4.8], [5., 5.], [5.2, 4.2], [5.1, 4.4], [5., 5.3], [4.7, 4.3],
+     [4.3, 5.1], [4.2, 5.], [4.4, 4.2], [5.1, 5.3], [4.7, 4.8], [5., 5.], [5.2, 4.5], [5.3, 4.6], [5., 5.3], [4.7, 4.3],
      [6., 2.], [3., 4.5], [4., 3.], [5., 2.8], [5.5, 2.9], [6.8, 3.5], [7.1, 4.5], [6.5, 5.9], [6.3, 6.3], [4.5, 7.], [2.5, 6.],
-     [6.1, 2.1], [6.1, 4.4], [3.5, 4.], [2.8, 3.], [2.9, 5.9], [3.5, 6.8], [4.5, 7.1], [5.9, 6.5], [6.2, 6.3], [4.6, 7.1], [2.3, 6.1]])
+     [6.3, 2.8], [6.1, 4.4], [3.5, 4.], [2.8, 3.], [2.9, 5.9], [3.5, 6.8], [4.5, 7.1], [5.9, 6.5], [6.2, 6.3], [4.6, 7.1], [2.3, 6.1],
+     [6., 2.3], [3., 5.2], [4., 3.], [5.1, 2.4], [5.2, 2.6], [3.9, 3.5], [4.1, 2.2], [3.5, 5.9], [4.3, 6.3], [3.5, 3.], [2.5, 4.6],
+     [4.1, 2.2], [3.3, 4.3], [3.5, 3.3], [2.5, 3.2], [2.9, 3.9], [3.2, 6.4], [4.3, 7.1], [5.4, 6.1], [6.1, 6.1], [4.3, 7.], [2.3, 4.1]])
 
 x_val = torch.Tensor(
     [[4.4, 5.1], [4.2, 5.2], [4.4, 4.3], [5.1, 5.], [4.8, 4.7], [5.2, 5.], [5.2, 4.3], [5.1, 4.9], [5.2, 5.], [4.8, 4.5],
@@ -169,6 +171,8 @@ x_val = torch.Tensor(
 
 y_train = torch.Tensor([[1.], [1.], [1.], [1.], [1.], [1.], [1.], [1.], [1.], [1.],
                         [1.], [1.], [1.], [1.], [1.], [1.], [1.], [1.], [1.], [1.],
+                        [0.], [0.], [0.], [0.], [0.], [0.], [0.], [0.], [0.], [0.], [0.],
+                        [0.], [0.], [0.], [0.], [0.], [0.], [0.], [0.], [0.], [0.], [0.],
                         [0.], [0.], [0.], [0.], [0.], [0.], [0.], [0.], [0.], [0.], [0.],
                         [0.], [0.], [0.], [0.], [0.], [0.], [0.], [0.], [0.], [0.], [0.]])
 
@@ -183,9 +187,9 @@ xx, yy = np.meshgrid(np.linspace(1.5 - eps, 7.5 + eps, 80),
 z = torch.Tensor(np.array([xx.ravel(), yy.ravel()]))
 z = z.T
 
-classificator = LogisticRegression(2, 15)
+classificator = LogisticRegression(2, 7)
 
-optim = optimizer.SGD(lr=0.3, model=classificator)
+optim = optimizer.SGD(lr=0.5, model=classificator)
 
 loss_history = np.array([])
 x_loss = np.array([])
@@ -193,21 +197,23 @@ val_loss_history = np.array([])
 val_x_loss = np.array([])
 
 plt.ion()
-for epoch in range(50000):
+for epoch in range(20000):
     optim.zero_grad()
     pred = classificator.forward(x_train)
     loss = F.BCE(y_train, pred)
     loss.backward()
     optim.step()
-    if epoch % 1000 == 0:
+    if epoch % 100 == 0:
         print(f'epoch: {epoch} loss: {loss}')
         loss_history = np.append(loss_history, loss.detach().numpy())
         x_loss = np.append(x_loss, epoch)
+
         # with torch.no_grad():
         #     pcolor = classificator.forward(z)
         #     pcolor = torch.reshape(pcolor, (-1,))
         #
         # classificator.plot_figure(pred, pcolor)
+
         with torch.no_grad():
             val_pred = classificator.forward(x_val)
             val_loss = F.BCE(y_val, val_pred)
