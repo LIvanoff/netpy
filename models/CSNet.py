@@ -25,6 +25,7 @@ class CSNet(object):
         self.fc7 = nn.Linear(9, 10)
         self.activ7 = nn.ReLU()
         self.fc8 = nn.Linear(10, 2)
+        self.activ8 = nn.Softmax()
 
         # self.activ1 = nn.Sigmoid()
         # self.fc2 = nn.Linear(n_input, 9)
@@ -40,8 +41,6 @@ class CSNet(object):
         # self.fc7 = nn.Linear(9, 10)
         # self.activ7 = nn.Sigmoid()
         # self.fc8 = nn.Linear(10, 2)
-
-        self.activ8 = nn.Softmax()
 
     def forward(self, x):
         out = self.fc1(x)
@@ -64,26 +63,27 @@ class CSNet(object):
 
 
 x = torch.empty(size=(10, 10)).normal_()
-y = torch.eye(100000, 2)
+y = torch.eye(10, 2)
 
 csnet = CSNet(10, 10)
-# optim = optimizer.SGD(lr=0.4, model=csnet)
+optim = optimizer.SGD(lr=0.4, model=csnet)
 
 loss_history = np.array([])
 x_loss = np.array([])
 
 start_time = time.time()
-for epoch in range(10):
-    # optim.zero_grad()
+for epoch in range(1):
+    optim.zero_grad()
     pred = csnet.forward(x)
+    print(pred)
     loss = F.CrossEntropy(y, pred)
-    # loss.backward()
-    # optim.step()
+    loss.backward()
+    optim.step()
 
-    # if epoch % 100 == 0:
-    print(f'epoch: {epoch} loss: {loss}')
-    loss_history = np.append(loss_history, loss.detach().numpy())
-    x_loss = np.append(x_loss, epoch)
+    if epoch % 10 == 0:
+        print(f'epoch: {epoch} loss: {loss}')
+        loss_history = np.append(loss_history, loss.detach().numpy())
+        x_loss = np.append(x_loss, epoch)
 
 print("--- %s seconds ---" % (time.time() - start_time))
 
