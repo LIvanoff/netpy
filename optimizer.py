@@ -35,9 +35,11 @@ class SGD(Optimizer):
 
 class LRScheduler(object):
     lr: float
+    count: int
 
     def __init__(self, optimizer: object):
         self.optimizer = optimizer
+        self.count = 0
         for var in vars(self.optimizer).items():
             if isinstance(var[1], float):
                 self.lr = var[1].lr
@@ -53,4 +55,7 @@ class StepLR(LRScheduler):
         self.gamma = gamma
 
     def step(self):
-        pass
+        self.count += 1
+
+        if self.count % self.step_size == 0:
+            self.lr *= self.gamma
