@@ -1,5 +1,6 @@
 from network.layers import Linear
 import torch
+import numpy as np
 
 
 class Optimizer(object):
@@ -65,6 +66,7 @@ class StepLR(LRScheduler):
 class ExponentialLR(LRScheduler):
     gamma: float
     last_epoch: int
+    lr_const: float
 
     def __init__(self, optimizer: object, gamma: float, last_epoch: int):
         super().__init__(optimizer)
@@ -72,4 +74,6 @@ class ExponentialLR(LRScheduler):
         self.last_epoch = last_epoch
 
     def step(self):
-        pass
+        self.count += 1
+        if self.count is not self.last_epoch:
+            self.lr[0] = self.gamma * np.exp(-self.gamma * self.count)
