@@ -61,3 +61,15 @@ class StepLR(LRScheduler):
         if self.count % self.step_size == 0:
             self.lr[0] *= self.gamma
 
+
+class ExponentialLR(LRScheduler):
+    gamma: float
+    last_epoch: int
+
+    def __init__(self, optimizer: object, gamma: float, last_epoch: int):
+        super().__init__(optimizer)
+        self.gamma = gamma
+        self.last_epoch = last_epoch
+
+    def step(self):
+        pass
