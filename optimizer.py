@@ -4,7 +4,7 @@ import torch
 
 class Optimizer(object):
     def __init__(self, model: object, lr: float = 1e-4):
-        self.lr = lr
+        self.lr = torch.Tensor([lr])
         self.model = model
 
     def step(self):
@@ -29,18 +29,21 @@ class SGD(Optimizer):
         with torch.no_grad():
             for var in vars(self.model).items():
                 if isinstance(var[1], Linear):
-                    var[1].weight -= torch.mul(var[1].weight.grad, self.lr)
-                    var[1].bias -= torch.mul(var[1].bias.grad, self.lr)
+                    var[1].weight -= torch.mul(var[1].weight.grad, self.lr[0])
+                    var[1].bias -= torch.mul(var[1].bias.grad, self.lr[0])
 
 
 class LRScheduler(object):
-    lr: float
+    lr: torch.Tensor
+    count: int
 
     def __init__(self, optimizer: object):
         self.optimizer = optimizer
+        self.count = 0
         for var in vars(self.optimizer).items():
-            if isinstance(var[1], float):
-                self.lr = var[1].lr
+            if isinstance(var[0], str):
+                self.lr = var[1]
+                return
 
 
 class StepLR(LRScheduler):
@@ -53,4 +56,8 @@ class StepLR(LRScheduler):
         self.gamma = gamma
 
     def step(self):
-        pass
+        self.count += 1
+
+        if self.count % self.step_size == 0:
+            self.lr[0] *= self.gamma
+
