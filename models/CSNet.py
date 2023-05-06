@@ -77,17 +77,10 @@ class CSNet(object):
         return out
 
 
-# x = torch.empty(size=(20000, 10)).normal_()
-# y = torch.eye(20000, 2)
-
 train = pd.read_excel('csnet.xlsx', engine='openpyxl')
 data = train.values
 y = torch.LongTensor(data[:, 8:10])
-print(y)
-# y = torch.transpose(y, 0, 1)
-# y = torch.LongTensor(y[0,:])
 x = torch.Tensor(data[:, :8])
-print(x)
 
 csnet = CSNet(8, 8)
 optim = optimizer.SGD(lr=0.03, model=csnet)
@@ -96,7 +89,7 @@ loss_history = np.array([])
 x_loss = np.array([])
 
 start_time = time.time()
-for epoch in range(10000):
+for epoch in range(1000):
     optim.zero_grad()
     pred = csnet.forward(x)
     loss = F.CrossEntropy(y, pred)
@@ -106,7 +99,7 @@ for epoch in range(10000):
     if epoch % 100 == 0:
         print(f'epoch: {epoch} loss: {loss}')
 
-    loss_history = np.append(loss_history, loss .detach().numpy())
+    loss_history = np.append(loss_history, loss.detach().numpy())
     x_loss = np.append(x_loss, epoch)
 
 print("--- %s seconds ---" % (time.time() - start_time))
@@ -114,3 +107,9 @@ print("--- %s seconds ---" % (time.time() - start_time))
 plt.plot(x_loss, loss_history)
 plt.grid(alpha=0.2)
 plt.show()
+
+with torch.no_grad():
+    pred = csnet.forward(x)
+    count = torch.count_nonzero(torch.eq(torch.argmax(pred, dim=1), torch.argmax(y, dim=1)))
+    acc = count / pred.size(dim=0)
+    print(f'Accuracy: {acc}')
