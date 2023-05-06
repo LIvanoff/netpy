@@ -83,13 +83,13 @@ y = torch.LongTensor(data[:, 8:10])
 x = torch.Tensor(data[:, :8])
 
 csnet = CSNet(8, 8)
-optim = optimizer.SGD(lr=0.03, model=csnet)
+optim = optimizer.SGD(lr=0.1, model=csnet)
 
 loss_history = np.array([])
 x_loss = np.array([])
 
 start_time = time.time()
-for epoch in range(1000):
+for epoch in range(2000):
     optim.zero_grad()
     pred = csnet.forward(x)
     loss = F.CrossEntropy(y, pred)
@@ -113,3 +113,10 @@ with torch.no_grad():
     count = torch.count_nonzero(torch.eq(torch.argmax(pred, dim=1), torch.argmax(y, dim=1)))
     acc = count / pred.size(dim=0)
     print(f'Accuracy: {acc}')
+    x_pred = np.arange(pred.size(dim=0))
+
+    plt.plot(x_pred, torch.argmax(y, dim=1), label='y', alpha=0.8)
+    plt.plot(x_pred, torch.argmax(pred, dim=1), 'r', label='pred', alpha=0.8)
+    plt.legend()
+    plt.grid(alpha=0.2)
+    plt.show()
