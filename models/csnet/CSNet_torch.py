@@ -31,10 +31,10 @@ class CSNet_torch(torch.nn.Module):
         out = self.activ2(out)
         out = self.fc3(out)
         out = self.activ3(out)
-        # out = self.fc4(out)
-        # out = self.activ4(out)
-        # out = self.fc5(out)
-        # out = self.activ5(out)
+        out = self.fc4(out)
+        out = self.activ4(out)
+        out = self.fc5(out)
+        out = self.activ5(out)
         out = self.fc6(out)
         out = self.activ6(out)
         out = self.fc7(out)
@@ -44,9 +44,9 @@ class CSNet_torch(torch.nn.Module):
         return out
 
 
-train = pd.read_excel('output.xlsx', engine='openpyxl')
+train = pd.read_excel('output1.xlsx', engine='openpyxl')
 data = train.values
-threshold = 30000
+threshold = 20000
 
 y_train = torch.Tensor(data[:threshold, 10:12])
 x_train = torch.Tensor(data[:threshold, :10])

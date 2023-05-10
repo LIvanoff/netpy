@@ -12,29 +12,22 @@ class CSNet(object):
     def __init__(self, n_input, n_hidden):
         self.fc1 = nn.Linear(n_input, n_hidden)
         self.activ1 = nn.ReLU()
-        # self.fc2 = nn.Linear(n_hidden, 9)
-        # self.activ2 = nn.ReLU()
-        # self.fc3 = nn.Linear(9, 8)
-        # self.activ3 = nn.ReLU()
-        # self.fc4 = nn.Linear(8, 7)
-        # self.activ4 = nn.ReLU()
-        # self.fc5 = nn.Linear(7, 8)
-        # self.activ5 = nn.ReLU()
-        # self.fc6 = nn.Linear(8, 9)
-        # self.activ6 = nn.ReLU()
-        # self.fc7 = nn.Linear(9, 10)
-        # self.activ7 = nn.ReLU()
-        # self.fc8 = nn.Linear(10, 2)
-        # self.activ8 = nn.Softmax()
-
         self.fc2 = nn.Linear(n_hidden, 9)
         self.activ2 = nn.ReLU()
         self.fc3 = nn.Linear(9, 8)
         self.activ3 = nn.ReLU()
-        self.fc4 = nn.Linear(8, 7)
-        self.activ4 = nn.ReLU()
-        self.fc5 = nn.Linear(7, 8)
-        self.activ5 = nn.ReLU()
+        # self.fc4 = nn.Linear(8, 7)
+        # self.activ4 = nn.ReLU()
+        # self.fc9 = nn.Linear(7, 6)
+        # self.activ9 = nn.ReLU()
+        # self.fc10 = nn.Linear(6, 5)
+        # self.activ10 = nn.ReLU()
+        # self.fc11 = nn.Linear(5, 6)
+        # self.activ11 = nn.ReLU()
+        # self.fc12 = nn.Linear(6, 7)
+        # self.activ12 = nn.ReLU()
+        # self.fc5 = nn.Linear(7, 8)
+        # self.activ5 = nn.ReLU()
         self.fc6 = nn.Linear(8, 9)
         self.activ6 = nn.ReLU()
         self.fc7 = nn.Linear(9, 10)
@@ -79,10 +72,18 @@ class CSNet(object):
         out = self.activ2(out)
         out = self.fc3(out)
         out = self.activ3(out)
-        out = self.fc4(out)
-        out = self.activ4(out)
-        out = self.fc5(out)
-        out = self.activ5(out)
+        # out = self.fc4(out)
+        # out = self.activ4(out)
+        # out = self.fc9(out)
+        # out = self.activ9(out)
+        # out = self.fc10(out)
+        # out = self.activ10(out)
+        # out = self.fc11(out)
+        # out = self.activ11(out)
+        # out = self.fc12(out)
+        # out = self.activ12(out)
+        # out = self.fc5(out)
+        # out = self.activ5(out)
         out = self.fc6(out)
         out = self.activ6(out)
         out = self.fc7(out)
@@ -94,12 +95,7 @@ class CSNet(object):
 
 train = pd.read_excel('output.xlsx', engine='openpyxl')
 data = train.values
-threshold = 2000
-
-# y_train = torch.LongTensor(data[:threshold, 10:12])
-# x_train = torch.Tensor(data[:threshold, :10])
-# y_val = torch.LongTensor(data[threshold:, 10:12])
-# x_val = torch.Tensor(data[threshold:, :10])
+threshold = 30000
 
 y_train = torch.LongTensor(data[:threshold, 10:12])
 x_train = torch.Tensor(data[:threshold, :10])
@@ -107,10 +103,11 @@ y_val = torch.LongTensor(data[threshold:, 10:12])
 x_val = torch.Tensor(data[threshold:, :10])
 
 csnet = CSNet(10, 10)
-optim = optimizer.SGD(lr=0.001, model=csnet)
-scheduler = optimizer.StepLR(optim, step_size=20000, gamma=0.1)
+optim = optimizer.SGD(lr=0.0001, model=csnet)
+scheduler = optimizer.StepLR(optim, step_size=10000, gamma=0.5)
+
 loss_history_train = np.array([])
-loss_history_val = np.array([])
+acc_history_val = np.array([])
 x_loss = np.array([])
 
 start_time = time.time()
@@ -120,7 +117,7 @@ for epoch in range(20000):
     loss = F.CrossEntropy(y_train, pred)
     loss.backward()
     optim.step()
-    # scheduler.step()
+    scheduler.step()
     if epoch % 100 == 0:
         print(f'epoch: {epoch} loss: {loss}')
 
@@ -129,16 +126,20 @@ for epoch in range(20000):
 
     with torch.no_grad():
         pred_val = csnet.forward(x_val)
-        loss_val = F.CrossEntropy(y_val, pred_val)
-        loss_history_val = np.append(loss_history_val, loss.detach().numpy())
+        count = torch.count_nonzero(torch.eq(torch.argmax(pred_val, dim=1), torch.argmax(y_val, dim=1)))
+        acc = count / pred_val.size(dim=0)
+        acc = acc.detach().numpy() * 100
+        if epoch % 100 == 0:
+            print(f'acc: {acc}')
+        acc_history_val = np.append(acc_history_val, acc)
 
 
 print("--- %s seconds ---" % (time.time() - start_time))
 
-plt.plot(x_loss, loss_history_train, label='train')
-plt.plot(x_loss, loss_history_val, label='val')
-plt.grid(alpha=0.2)
+plt.plot(x_loss, loss_history_train, label='loss')
+plt.plot(x_loss, acc_history_val, label='acc')
 plt.legend()
+plt.grid(alpha=0.2)
 plt.show()
 
 with torch.no_grad():
