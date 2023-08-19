@@ -25,11 +25,19 @@ class MAELoss(object):
         return torch.mean(torch.abs(pred - y))
 
 
-def BCE(y, y_hat):
-    y_hat = torch.clip(y_hat, 1e-10, 1 - 1e-10)
-    return torch.mean(-(y * torch.log(y_hat) + (1 - y) * torch.log(1 - y_hat)))
+class BCELoss(object):
+    def __init__(self):
+        pass
+
+    def __call__(self, pred, y, *args, **kwargs):
+        pred = torch.clip(pred, 1e-10, 1 - 1e-10)
+        return pred - y * y + torch.log(1 + torch.exp(-pred))
 
 
-def CrossEntropy(y, y_hat):
-    y_hat = torch.clip(y_hat, 1e-10, 1 - 1e-10)
-    return -torch.mean(y * torch.log(y_hat))
+class CrossEntropyLoss(object):
+    def __init__(self):
+        pass
+
+    def __call__(self, pred, y, *args, **kwargs):
+        pred = torch.clip(pred, 1e-10, 1 - 1e-10)
+        return -torch.mean(y * torch.log(pred))
